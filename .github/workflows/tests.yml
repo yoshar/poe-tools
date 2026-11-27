@@ -21,10 +21,10 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r requirements-dev.txt
-      - run: python -m pytest -q
+      - name: Migrations apply to an empty database and match the models
+        run: alembic upgrade head && alembic check
         env:
           DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/poetools_test
-      - name: Migrations match the models
-        run: alembic upgrade head && alembic check
+      - run: python -m pytest -q
         env:
           DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/poetools_test
