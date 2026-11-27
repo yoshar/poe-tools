@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="/admin">&larr; Admin</a></p>
+<h1>Patch: {{ patch.name }} {% if patch.is_current %}<span class="tag">current</span>{% endif %}</h1>
+{% if not patch.is_current %}
+<form method="post" action="/admin/patches/{{ patch.id }}/current"><button type="submit">Make this the current patch</button></form>
+{% endif %}
+
+<form method="post" action="/admin/patches/{{ patch.id }}/notes" class="stack">
+  <label>Notes (e.g. link to the patch notes)<textarea name="notes" rows="3">{{ patch.notes }}</textarea></label>
+  <button type="submit">Save notes</button>
+</form>
+
+<h2>The Garish Power outcomes ({{ patch.garish_outcomes|length }})</h2>
+{% if previous %}
+<p class="muted">Changes since {{ previous.name }}:
+  {% if not diff.added and not diff.removed %}none.{% endif %}
+  {% for n in diff.added %}<span class="tag add">+ {{ n }}</span>{% endfor %}
+  {% for n in diff.removed %}<span class="tag del">&minus; {{ n }}</span>{% endfor %}
+</p>
+{% endif %}
+<table>
+  <thead><tr><th>Jewel</th><th>Base</th><th></th></tr></thead>
+  <tbody>
+  {% for o in patch.garish_outcomes %}
+    <tr><td>{{ o.name }}</td><td>{{ o.base_type }}</td>
+    <td><form method="post" action="/admin/patches/{{ patch.id }}/garish/{{ o.id }}/delete"><button class="link" type="submit">Remove</button></form></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+<form method="post" action="/admin/patches/{{ patch.id }}/garish" class="inline">
+  <input name="name" placeholder="Jewel name (exactly as on poe.ninja)" required>
+  <input name="base_type" placeholder="Base, e.g. Viridian Jewel">
+  <button type="submit">Add</button>
+</form>
+<p class="small">
+  <a href="/admin/patches/{{ patch.id }}/garish.csv">Download CSV</a>
+</p>
+<form method="post" action="/admin/patches/{{ patch.id }}/garish.csv" enctype="multipart/form-data" class="inline small">
+  <input type="file" name="file" accept=".csv" required>
+  <button type="submit">Replace list from CSV</button>
+</form>
+{% endblock %}

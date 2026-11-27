@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}The Garish Power · PoE Tools{% endblock %}
+{% block content %}
+<h1>The Garish Power</h1>
+<p class="muted">4 cards turn in for 1 random unique jewel from the list below, each equally likely.
+Is that worth more than selling the cards?</p>
+
+{% if not leagues %}
+<p class="warn">No price data yet. The first poe.ninja fetch runs a few seconds after the server starts.</p>
+{% else %}
+<form class="controls" id="controls" method="get" action="/tools/garish-power">
+  <label>League
+    <select name="league" id="league">
+      {% for lg in leagues %}<option value="{{ lg.id }}" {% if lg.id == league %}selected{% endif %}>{{ lg.name }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Card price (chaos each)
+    <input type="number" name="card_price" id="card_price" min="0" step="any" inputmode="decimal"
+           placeholder="poe.ninja price" value="{{ ev.card_price_used if ev.card_price_overridden else '' }}">
+  </label>
+  <button type="button" id="reset" class="link">Use poe.ninja price</button>
+  <noscript><button type="submit">Update</button></noscript>
+</form>
+<p class="muted small" id="ninja-card"></p>
+
+<section class="results" id="results"></section>
+
+<h2>Possible jewels</h2>
+<div class="table-wrap">
+<table id="jewels">
+  <thead><tr><th>Jewel</th><th>Base</th><th class="num">Price (c)</th><th class="num">Price (div)</th>
+  <th class="num">Listings</th><th>Beats cost?</th><th class="num">Share of value</th></tr></thead>
+  <tbody></tbody>
+</table>
+</div>
+<ul class="notes small muted">
+  <li>Warnings follow poe.ninja: fewer than {{ thresholds.low_listings }} listings, or a price at the {{ thresholds.floor|round(0)|int }}c floor, means the price is unreliable.</li>
+  <li>Prices are listing-based estimates from poe.ninja, not sale prices. Selling also costs undercutting and time.</li>
+  <li>Only the plain versions count. Foulborn and corrupted copies can't come from the card.</li>
+</ul>
+<script id="initial" type="application/json">{{ ev | tojson }}</script>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="/static/garish.js"></script>{% endblock %}
