@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Path of Exile tools</h1>
+<p class="muted">Analyses that update themselves from poe.ninja prices.</p>
+<div class="cards">
+  {% for t in tools %}
+  <a class="card" href="/tools/{{ t.slug }}"><h2>{{ t.name }}</h2><p>{{ t.summary }}</p></a>
+  {% endfor %}
+</div>
+{% endblock %}

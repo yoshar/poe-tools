@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PoE Tools{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">PoE Tools</a>
+    <nav>
+      <a href="/tools/garish-power">Garish Power</a>
+      {% if is_admin(request) %}<a href="/admin">Admin</a>{% endif %}
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer>Prices from <a href="https://poe.ninja">poe.ninja</a>. Not affiliated with Grinding Gear Games.</footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
